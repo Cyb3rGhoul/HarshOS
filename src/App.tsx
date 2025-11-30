@@ -446,7 +446,26 @@ const SnakeGame = () => {
 
 // --- Menu Bar Component ---
 
-const TopBar = ({ title, activeMenu, setActiveMenu }: { title: string, activeMenu: string | null, setActiveMenu: (m: string | null) => void }) => {
+type MenuSeparator = {
+  type: "separator";
+};
+
+type MenuActionItem = {
+  type?: undefined;
+  label: string;
+  action?: () => void;
+  shortcut?: string;
+};
+
+type MenuItem = MenuSeparator | MenuActionItem;
+
+type TopBarProps = {
+  title: string;
+  activeMenu: string | null;
+  setActiveMenu: (m: string | null) => void;
+};
+
+const TopBar = ({ title, activeMenu, setActiveMenu }: TopBarProps) => {
   const [date, setDate] = useState(new Date());
 
   useEffect(() => {
@@ -454,77 +473,103 @@ const TopBar = ({ title, activeMenu, setActiveMenu }: { title: string, activeMen
     return () => clearInterval(timer);
   }, []);
 
-  const menus = {
-    '': [
-      { label: 'About This Portfolio', action: () => alert("Portfolio OS v2.0 - Built with React") },
-      { label: 'System Preferences...', action: () => {} },
-      { type: 'separator' },
-      { label: 'Sleep', action: () => alert("Zzz...") },
-      { label: 'Restart', action: () => window.location.reload() },
-      { label: 'Shut Down', action: () => window.close() },
+  const menus: Record<string, MenuItem[]> = {
+    "": [
+      { label: "About This Portfolio", action: () => alert("Portfolio OS v2.0 - Built with React") },
+      { label: "System Preferences...", action: () => {} },
+      { type: "separator" },
+      { label: "Sleep", action: () => alert("Zzz...") },
+      { label: "Restart", action: () => window.location.reload() },
+      { label: "Shut Down", action: () => window.close() },
     ],
-    'File': [
-      { label: 'New Window', shortcut: '⌘N', action: () => {} },
-      { label: 'Close Window', shortcut: '⌘W', action: () => {} },
-      { type: 'separator' },
-      { label: 'Download Resume', action: () => window.open('https://linkedin.com/in/harsh-shukla19', '_blank') }
+
+    File: [
+      { label: "New Window", shortcut: "⌘N", action: () => {} },
+      { label: "Close Window", shortcut: "⌘W", action: () => {} },
+      { type: "separator" },
+      { label: "Download Resume", action: () => window.open("https://linkedin.com/in/harsh-shukla19", "_blank") },
     ],
-    'Edit': [
-      { label: 'Undo', shortcut: '⌘Z' },
-      { label: 'Redo', shortcut: '⇧⌘Z' },
-      { type: 'separator' },
-      { label: 'Cut', shortcut: '⌘X' },
-      { label: 'Copy', shortcut: '⌘C' },
-      { label: 'Paste', shortcut: '⌘V' },
+
+    Edit: [
+      { label: "Undo", shortcut: "⌘Z" },
+      { label: "Redo", shortcut: "⇧⌘Z" },
+      { type: "separator" },
+      { label: "Cut", shortcut: "⌘X" },
+      { label: "Copy", shortcut: "⌘C" },
+      { label: "Paste", shortcut: "⌘V" },
     ],
-    'View': [
-      { label: 'Enter Full Screen', shortcut: '^⌘F' },
-      { label: 'Actual Size', shortcut: '⌘0' },
+
+    View: [
+      { label: "Enter Full Screen", shortcut: "^⌘F" },
+      { label: "Actual Size", shortcut: "⌘0" },
     ],
-    'Help': [
-      { label: 'Portfolio Help' },
-      { label: 'View Source Code', action: () => window.open('https://github.com/cyb3rghoul', '_blank') }
-    ]
+
+    Help: [
+      { label: "Portfolio Help" },
+      { label: "View Source Code", action: () => window.open("https://github.com/cyb3rghoul", "_blank") },
+    ],
   };
 
   return (
-    <div className="h-8 w-full bg-black/20 backdrop-blur-xl flex items-center justify-between px-4 text-white text-sm fixed top-0 z-50 shadow-sm border-b border-white/5 select-none" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="h-8 w-full bg-black/20 backdrop-blur-xl flex items-center justify-between px-4 text-white text-sm fixed top-0 z-50 shadow-sm border-b border-white/5 select-none"
+      onClick={(e) => e.stopPropagation()}
+    >
       <div className="flex items-center space-x-4 h-full">
         {Object.entries(menus).map(([key, items]) => (
           <div key={key} className="relative h-full flex items-center">
-            <span 
-              className={`cursor-default px-2.5 py-1 rounded transition-colors font-medium ${activeMenu === key ? 'bg-white/20' : 'hover:bg-white/10'} ${key === '' ? 'text-base font-bold pb-1.5' : 'text-xs'}`}
+            <span
+              className={`cursor-default px-2.5 py-1 rounded transition-colors font-medium ${
+                activeMenu === key ? "bg-white/20" : "hover:bg-white/10"
+              } ${key === "" ? "text-base font-bold pb-1.5" : "text-xs"}`}
               onClick={() => setActiveMenu(activeMenu === key ? null : key)}
             >
               {key}
             </span>
+
             {activeMenu === key && (
               <div className="absolute top-full left-0 mt-1 w-56 bg-white/90 backdrop-blur-xl rounded-lg shadow-xl border border-white/20 py-1.5 z-50 text-black animate-in fade-in slide-in-from-top-1 duration-100">
-                {items.map((item, idx) => (
-                  item.type === 'separator' ? (
+                {items.map((item, idx) =>
+                  item.type === "separator" ? (
                     <div key={idx} className="h-[1px] bg-black/10 my-1 mx-2" />
                   ) : (
-                    <div 
-                      key={idx} 
+                    <div
+                      key={idx}
                       className="px-4 py-1.5 hover:bg-blue-500 hover:text-white flex justify-between items-center cursor-default group"
-                      onClick={() => { item.action?.(); setActiveMenu(null); }}
+                      onClick={() => {
+                        item.action?.();
+                        setActiveMenu(null);
+                      }}
                     >
                       <span>{item.label}</span>
-                      {item.shortcut && <span className="text-gray-400 group-hover:text-white/80 text-xs">{item.shortcut}</span>}
+                      {item.shortcut && (
+                        <span className="text-gray-400 group-hover:text-white/80 text-xs">
+                          {item.shortcut}
+                        </span>
+                      )}
                     </div>
                   )
-                ))}
+                )}
               </div>
             )}
           </div>
         ))}
         {title && <span className="font-bold text-xs ml-2 opacity-80 hidden sm:block">{title}</span>}
       </div>
+
       <div className="flex items-center space-x-4 text-xs font-medium text-white/90">
         <div className="hidden sm:flex items-center space-x-3 opacity-80">
-           <Battery size={16} /> <Wifi size={16} /> <Search size={16} />
+          <Battery size={16} /> <Wifi size={16} /> <Search size={16} />
         </div>
-        <span>{date.toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+        <span>
+          {date.toLocaleString([], {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </span>
       </div>
     </div>
   );
@@ -722,7 +767,7 @@ const App = () => {
       <div className="fixed bottom-4 left-0 w-full flex justify-center z-[10000]">
         <div className="flex items-end space-x-3 px-4 pb-3 pt-3 bg-white/20 backdrop-blur-2xl rounded-2xl border border-white/20 shadow-2xl transition-all duration-300">
           {appIcons.map((app) => {
-            const isOpen = windows.some(w => w.id === app.id && !w.isMinimized);
+            // const isOpen = windows.some(w => w.id === app.id && !w.isMinimized);
             const isRunning = windows.some(w => w.id === app.id);
             return (
               <div key={app.id} className="group relative flex flex-col items-center">
