@@ -33,7 +33,7 @@ const AboutContent = () => (
   <div className="p-8 font-sans text-gray-800 h-full overflow-y-auto bg-gradient-to-br from-white to-gray-50">
     <div className="flex flex-col items-center mb-8">
       <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 mb-4 shadow-xl flex items-center justify-center text-white text-4xl font-bold border-4 border-white overflow-hidden relative">
-         <span className="z-10"><img src="src\assets\portimage.png" alt="image" /></span>
+         <span className="z-10"><img src="https://github.com/Cyb3rGhoul/HarshOS/blob/main/src/assets/portimage.png?raw=true" alt="image" /></span>
          <div className="absolute inset-0 bg-black/10"></div>
       </div>
       <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Harsh Shukla</h1>
